@@ -1,6 +1,6 @@
-# vue-project
+## Kulinerku Website Project
 
-This template should help get you started developing with Vue 3 in Vite.
+Aplikasi pesan makanan kulinerku project latihan implementasi penerapan Rest Api dengan Codeigniter 4 yang terintegrasi dengan Front End Vue JS dengan dbms MySQL
 
 ## Recommended IDE Setup
 
