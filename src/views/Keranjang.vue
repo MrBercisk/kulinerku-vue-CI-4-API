@@ -37,16 +37,17 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr v-for="(keranjang, index) in keranjangs" :key="keranjang.id">
-                                <th>{{index+1}}</th>
-                                <td><img :src="'../assets/images/' + keranjang.product.gambar" class="img-fluid shadow" width="250"></td>
-                                <td><strong>{{keranjang.product.nama}}</strong></td>
-                                <td>{{keranjang.keterangan ? keranjang.keterangan: "-"}}</td>
-                                <td>{{keranjang.jumlah_pemesanan}}</td>
-                                <td align="right">Rp. {{keranjang.product.harga}}</td>
-                                <td align="right"><strong>Rp. {{keranjang.jumlah_pemesanan * keranjang.product.harga}}</strong> </td>
+                                <tr v-for="(keranjangs, index) in keranjang" :key="keranjangs.id">
+                                <td>{{index+1}}</td>
+                                <td>{{keranjangs.gambar}}</td>
+                                <td>{{keranjangs.nama}}</td>
+                                <td>{{keranjangs.keterangan ? keranjangs.keterangan: "-"}}</td>
+                                <td>{{keranjangs.jumlah_pesan}}</td>
+                                <td align="right">{{keranjangs.harga}}</td>
+                                <td align="right">{{keranjangs.harga * keranjangs.jumlah_pesan}}</td>
+                                
                                 <td align="center">
-                                    <font-awesome-icon class="text-danger" icon="trash" @click="hapusKeranjang(keranjang.id)" />
+                                    <font-awesome-icon class="text-danger" icon="trash" @click="hapusKeranjang(keranjangs.id)" />
 
                                 </td>
                             </tr>
@@ -67,11 +68,11 @@
                         <form class="mt-3" v-on:submit.prevent>
                             <div class="form-group">
                                 <label for="nama">Nama : </label>
-                                <input type="text" class="form-control" v-model="pesan.nama">
+                                <input type="text" name="nama" class="form-control" v-model="pesanan.nama">
                             </div>
                             <div class="form-group">
-                                <label for="noMeja">Nomor Meja : </label>
-                                <input type="text" class="form-control" v-model="pesan.noMeja">
+                                <label for="no_meja">Nomor Meja : </label>
+                                <input type="text" name="no_meja" class="form-control" v-model="pesanan.no_meja">
                             </div>
                        
                             <button type="submit" class="btn btn-success float-right" @click="checkout"><font-awesome-icon icon="shopping-cart" /> Checkout</button>
@@ -93,17 +94,22 @@ export default {
     },
     data() {
         return {
-            keranjangs: [],
-            pesan: {}
+            keranjang: [],
+            pesanan: {
+                keranjang_id: '',
+                nama: '',
+                no_meja: ''
+            },
+            totalHarga: ''
         }
     },
     methods: {
-        setKeranjangs(data) {
-            this.keranjangs = data;
+        setKeranjang(data) {
+            this.keranjang = data;
         },
         hapusKeranjang(id) {
             axios
-                .delete("http://localhost:3000/keranjangs/" + id)
+                .delete("http://localhost:8080/api/keranjang/" + id)
                 .then(() => {
                     this.$toast.error('Sukses Hapus Keranjang', {
                         type: 'error',
@@ -113,24 +119,29 @@ export default {
                     });
                     /* agar tidak mereload halaman /update data keranjang */
                     axios
-                        .get("http://localhost:3000/keranjangs")
-                        .then((response) => this.setKeranjangs(response.data))
+                        .get("http://localhost:8080/api/keranjang")
+                        .then((response) => this.setKeranjang(response.data))
                         .catch((error) => console.log(error))
 
                 })
                 .catch((error) => console.log(error))
         },
         checkout() {
-            if (this.pesan.nama && this.pesan.noMeja) {
-                this.pesan.keranjangs = this.keranjangs;
+            if (this.pesanan.nama && this.pesanan.no_meja) {
+                this.pesanan.keranjang = this.pesanan.keranjang;
+                const pesanan = {
+                    keranjang_id: this.keranjang.id,
+                    nama: this.pesanan.nama,
+                    no_meja: this.pesanan.no_meja
+                };
                 axios
-                    .post("http://localhost:3000/pesanans", this.pesan)
+                    .post("http://localhost:8080/api/pesanan", pesanan)
                     .then(() => {
 
                         /* Hapus semua keranjang */
                         this.keranjangs.map(function (item) {
                             return axios
-                                .delete("http://localhost:3000/keranjangs/" + item.id)
+                                .delete("http://localhost:8080/api/keranjang/" + item.id)
                                 .catch((error) => console.log(error))
                         })
 
@@ -150,18 +161,19 @@ export default {
                     dismissible: true,
                 });
             }
-        }
+        },
     },
     mounted() {
         axios
-            .get("http://localhost:3000/keranjangs")
-            .then((response) => this.setKeranjangs(response.data))
+            .get("http://localhost:8080/api/keranjang")
+            .then((response) => this.setKeranjang(response.data))
             .catch((error) => console.log(error))
     },
+
     computed: {
         totalHarga() {
-            return this.keranjangs.reduce(function (items, data) {
-                return items + data.product.harga * data.jumlah_pemesanan
+            return this.keranjang.reduce(function (total, keranjangs) {
+                return total + keranjangs.harga * keranjangs.jumlah_pesan
             }, 0)
         }
     }

@@ -31,8 +31,11 @@
                         <!-- v on prevent agar tidak reload saat submit -->
                         <form class="mt-3" v-on:submit.prevent>
                             <div class="form-group">
-                                <label for="jumlah_pemesanan">Jumlah Pesan</label>
-                                <input type="number" class="form-control" v-model="pesan.jumlah_pemesanan">
+                                <input type="hidden" class="form-control"name="product_id" v-model="pesan.product_id">
+                            </div>
+                            <div class="form-group">
+                                <label for="jumlah_pesan">Jumlah Pesan</label>
+                                <input type="number" class="form-control" name="jumlah_pesan" v-model="pesan.jumlah_pesan">
                             </div>
                             <div class="form-group">
                                 <label for="keterangan">keterangan</label>
@@ -59,7 +62,11 @@ export default {
     data() {
         return {
             product: {},
-            pesan: {}
+            pesan: {
+                product_id: '',
+                jumlah_pesan: '',
+                keterangan: ''
+            }
         }
     },
     methods: {
@@ -67,36 +74,37 @@ export default {
             this.product = data
         },
         pemesanan() {
-          if(this.pesan.jumlah_pemesanan){
-            this.pesan.product = this.product;
-            axios
-                .post("http://localhost:3000/keranjangs", this.pesan)
+            const keranjang = {
+                product_id: this.product.id,
+                jumlah_pesan: this.pesan.jumlah_pesan,
+                keterangan: this.pesan.keterangan
+            };
+            axios.post(`http://localhost:8080/api/keranjang`, keranjang)
                 .then(() => {
-                    this.$router.push({path: "/keranjang"})
+                    this.$router.push({ path: "/" })
                     this.$toast.success('Sukses Masuk Keranjang', {
-                    type: 'success',
-                    position: 'top-right',
-                    duration: 3000,
-                    dismissible: true,
+                        type: 'success',
+                        position: 'top-right',
+                        duration: 3000,
+                        dismissible: true,
                     })
                 })
-          }else{
-            this.$toast.success('Isi jumlah pesanan', {
+                .catch(() => this.$toast.error('Gagal tambah data', {
                     type: 'error',
                     position: 'top-right',
                     duration: 3000,
                     dismissible: true,
-                    })
-          }
+                }));
         }
     },
-
     mounted() {
         axios
             .get("http://localhost:8080/api/products/" + this.$route.params.id)
             .then((response) => this.setProduct(response.data))
             .catch((error) => console.log(error))
-    }
+
+
+    },
 }
 </script>
 <style lang="">

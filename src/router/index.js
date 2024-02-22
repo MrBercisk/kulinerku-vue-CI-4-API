@@ -8,6 +8,7 @@ import Login from '../views/Login.vue'
 import Daftar from '../views/Daftar.vue'
 import SyaratKetentuan from '../views/SyaratKetentuan.vue'
 import Kebijakan from '../views/Kebijakan.vue'
+import TambahProduct from '../views/Product/TambahProduct.vue'
 
 const router = createRouter({
   history: createWebHistory(),
@@ -56,6 +57,11 @@ const router = createRouter({
       path: '/terms-and-conditions/',
       name: 'SyaratKetentuan',
       component: SyaratKetentuan
+    },
+    {
+      path: '/tambah-product/',
+      name: 'TambahProduct',
+      component: TambahProduct
     },
   ]
 });

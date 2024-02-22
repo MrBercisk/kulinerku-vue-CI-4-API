@@ -8,14 +8,14 @@
           <h2>Best <strong>Foods</strong></h2>
         </div>
         <div class="col">
-          <router-link to="/foods" class="btn btn-md-success  float-right"><font-awesome-icon icon="eye" /> Lihat
+          <router-link to="/foods" class="btn btn-success  float-right"><font-awesome-icon icon="eye" /> Lihat
             Semua</router-link>
         </div>
       </div>
 
       <div class="row mb-3">
         <div class="col-md-4 mt-4" v-for="product in products" :key="product.id">
-          <CardProduct  :product="product"/>
+          <CardProduct :product="product" />
         </div>
 
       </div>

@@ -25,11 +25,18 @@
                     </li>
                 </ul>
                 <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <router-link class="nav-link" to="/tambah-product"> Tambah Product
+                            <font-awesome-icon class="text-muted" icon="plus" />
+                        </router-link>
+                    </li>
+                </ul>
+                <ul class="navbar-nav">
                     <li class="nav-item active">
                         <router-link class="nav-link" to="/keranjang">Keranjang
                             <font-awesome-icon class="text-muted" icon="shopping-bag" />
                             <span class="badge badge-success ml-2">{{ updateKeranjang ? updateKeranjang.length :
-                                jumlah_pesanans.length }}</span>
+                                jumlah_pesanan.length }}</span>
                         </router-link>
                     </li>
                 </ul>
@@ -46,18 +53,18 @@ export default {
 
     data() {
         return {
-            jumlah_pesanans: []
+            jumlah_pesanan: []
         }
     },
     methods: {
         setJumlah(data) {
-            this.jumlah_pesanans = data
+            this.jumlah_pesanan = data
         }
     },
     props: ['updateKeranjang'],
     mounted() {
         axios
-            .get("http://localhost:3000/keranjangs")
+            .get("http://localhost:8080/api/keranjang")
             .then((response) => this.setJumlah(response.data))
             .catch((error) => console.log(error))
     },

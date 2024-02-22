@@ -46,27 +46,24 @@ class Products extends ResourceController
     public function create()
     {
         if ($this->request) {
-            if ($this->request->getJSON()) {
-                $json = $this->request->getJSON();
+            $gambar = $this->request->getFile('gambar');
 
-                $data = $this->products->insert([
-                    'kode' => $json->kode,
-                    'nama' => $json->nama,
-                    'harga' => $json->harga,
-                    'gambar' => $json->gambar,
-                    'is_ready' => $json->is_ready,
-                ]);
-            } else {
+            if ($gambar->isValid()) {
+                $gambarName = $gambar->getRandomName();
+                $gambar->move('upload', $gambarName);
 
                 $data = $this->products->insert([
                     'kode' => $this->request->getPost('kode'),
                     'nama' => $this->request->getPost('nama'),
                     'harga' => $this->request->getPost('harga'),
-                    'gambar' => $this->request->getPost('gambar'),
+                    'gambar' => $gambarName,
                     'is_ready' => $this->request->getPost('is_ready')
                 ]);
+
+                return $this->respondCreated('Data Berhasil Ditambahkan', $data);
+            } else {
+                return $this->respond(['error' => 'File gambar tidak valid'], 400);
             }
-            return $this->respondCreated('Data Berhasil Ditambahkan', $data, 201);
         }
     }
     public function update($id = null)

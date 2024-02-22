@@ -53,16 +53,15 @@ class Pesanan extends ResourceController
                 $json = $this->request->getJSON();
 
                 $data = $this->pesanan->insert([
-                    'product_id' => $json->product_id,
-                    'jumlah_pesan' => $json->jumlah_pesan,
-                    'keterangan' => $json->hketeranganarga,
+                    'keranjang_id' => $json->keranjang_id,
+                    'nama' => $json->nama,
+                    'no_meja' => $json->no_meja,
                 ]);
             } else {
-
-                $data = $this->products->insert([
-                    'product_id' => $this->request->getPost('product_id'),
-                    'jumlah_pesan' => $this->request->getPost('jumlah_pesan'),
-                    'keterangan' => $this->request->getPost('keterangan'),
+                $data = $this->pesanan->insert([
+                    'keranjang_id' => $this->request->getPost('keranjang_id'),
+                    'nama' => $this->request->getPost('nama'),
+                    'no_meja' => $this->request->getPost('no_meja'),
                 ]);
             }
             return $this->respondCreated('Data Berhasil Ditambahkan', $data, 201);
