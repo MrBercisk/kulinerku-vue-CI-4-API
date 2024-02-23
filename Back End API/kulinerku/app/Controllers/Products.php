@@ -53,14 +53,14 @@ class Products extends ResourceController
                 $gambar->move('upload', $gambarName);
 
                 $data = $this->products->insert([
-                    'kode' => $this->request->getPost('kode'),
-                    'nama' => $this->request->getPost('nama'),
-                    'harga' => $this->request->getPost('harga'),
+                    'kode' => $this->request->getVar('kode'),
+                    'nama' => $this->request->getVar('nama'),
+                    'harga' => $this->request->getVar('harga'),
                     'gambar' => $gambarName,
-                    'is_ready' => $this->request->getPost('is_ready')
+                    'is_ready' => $this->request->getVar('is_ready')
                 ]);
 
-                return $this->respondCreated('Data Berhasil Ditambahkan', $data);
+                return $this->respondCreated('Data Berhasil Ditambahkan', $data, 201);
             } else {
                 return $this->respond(['error' => 'File gambar tidak valid'], 400);
             }
@@ -68,25 +68,42 @@ class Products extends ResourceController
     }
     public function update($id = null)
     {
-        if ($this->request) {
-            if ($this->request->getJSON()) {
-                $json = $this->request->getJSON();
+        $product = $this->products->find($id);
 
-                $data = $this->update($json->id, [
-                    'kode' => $json->kode,
-                    'nama' => $json->nama,
-                    'harga' => $json->harga,
-                    'gambar' => $json->gambar,
-                    'is_ready' => $json->is_ready,
-                ]);
-            } else {
-                $product = $this->request->getRawInput();
-                $data = $this->update($id, $product);
-            }
-
-            return $this->respondUpdated('Data Berhasil Diupdate', $data, 200);
+        if (!$product) {
+            return $this->failNotFound('Makanan tidak ditemukan');
         }
+
+        $gambar = $this->request->getFile('gambar');
+        $gambarName = $product['gambar']; // Simpan nama gambar saat ini sebagai default
+
+        if ($gambar) {
+            // Jika ada file gambar yang diupload
+            $gambarName = $gambar->getRandomName();
+            $gambar->move('upload', $gambarName);
+
+            // Hapus gambar lama jika ada
+            if (is_file(WRITEPATH . 'upload/' . $product['gambar'])) {
+                unlink(WRITEPATH . 'upload/' . $product['gambar']);
+            }
+        }
+
+        // Update data produk
+        $data = [
+            'id' => $id,
+            'kode' => $this->request->getVar('kode'),
+            'nama' => $this->request->getVar('nama'),
+            'harga' => $this->request->getVar('harga'),
+            'gambar' => $gambarName,
+            'is_ready' => $this->request->getVar('is_ready')
+        ];
+
+        // Lakukan pembaruan data produk
+        $this->products->save($data);
+
+        return $this->respondUpdated('Data Berhasil Diupdate', 200);
     }
+
 
     public function delete($id = null)
     {

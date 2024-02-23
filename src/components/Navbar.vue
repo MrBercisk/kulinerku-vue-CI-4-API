@@ -16,6 +16,9 @@
                     <li class="nav-item">
                         <router-link class="nav-link" to="/foods">Foods</router-link>
                     </li>
+                    <li class="nav-item">
+                        <router-link class="nav-link" to="/best-foods">Best Foods</router-link>
+                    </li>
                 </ul>
                 <ul class="navbar-nav ml-5">
                     <li class="nav-item">

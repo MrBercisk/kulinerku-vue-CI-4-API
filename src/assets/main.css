@@ -37,11 +37,15 @@
 
 .card{
   border: none;
+  border-radius: 20px; 
+  height: 100%;
 }
 
 .card .card-img-top{
-  border-top-right-radius: 20px;
-  border-top-left-radius: 20px;
+  object-fit: cover; 
+  border-top-left-radius: 20px; 
+  border-top-right-radius: 20px; 
+  height: 200px;
 }
 
 nav .breadcrumb{

@@ -9,6 +9,7 @@ import Daftar from '../views/Daftar.vue'
 import SyaratKetentuan from '../views/SyaratKetentuan.vue'
 import Kebijakan from '../views/Kebijakan.vue'
 import TambahProduct from '../views/Product/TambahProduct.vue'
+import BestFoods from '../views/Product/BestFoods.vue'
 
 const router = createRouter({
   history: createWebHistory(),
@@ -62,6 +63,11 @@ const router = createRouter({
       path: '/tambah-product/',
       name: 'TambahProduct',
       component: TambahProduct
+    },
+    {
+      path: '/best-foods/',
+      name: 'BestFoods',
+      component: BestFoods
     },
   ]
 });

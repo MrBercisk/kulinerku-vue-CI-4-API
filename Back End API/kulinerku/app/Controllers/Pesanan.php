@@ -48,26 +48,26 @@ class Pesanan extends ResourceController
 
     public function create()
     {
-        if ($this->request) {
-            if ($this->request->getJSON()) {
-                $json = $this->request->getJSON();
-
-                $data = $this->pesanan->insert([
-                    'keranjang_id' => $json->keranjang_id,
-                    'nama' => $json->nama,
-                    'no_meja' => $json->no_meja,
-                ]);
+        if ($this->request->getJSON()) {
+            $json = $this->request->getJSON();
+    
+            $data = $this->pesanan->insert([
+                'keranjang_id' => $json->keranjang_id,
+                'nama' => $json->nama,
+                'no_meja' => $json->no_meja,
+                'totalHarga' => $json->totalHarga,
+            ]);
+            
+            if ($data) {
+                return $this->respondCreated('Data Berhasil Ditambahkan', $data, 201);
             } else {
-                $data = $this->pesanan->insert([
-                    'keranjang_id' => $this->request->getPost('keranjang_id'),
-                    'nama' => $this->request->getPost('nama'),
-                    'no_meja' => $this->request->getPost('no_meja'),
-                ]);
+                return $this->fail('Gagal menambahkan data pesanan', 500);
             }
-            return $this->respondCreated('Data Berhasil Ditambahkan', $data, 201);
+        } else {
+            return $this->fail('Permintaan harus berupa JSON', 400);
         }
     }
-  
+    
     public function delete($id = null)
     {
         $data = $this->pesanan->find($id);

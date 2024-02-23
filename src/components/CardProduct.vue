@@ -1,9 +1,9 @@
 <template>
-    <div class="card shadow" style="border-radius: 20px;">
-        <img v-if="product.gambar" :src="getImgUrl(product.gambar)" class="card-img-top" alt="...">
-        <div class="card-body">
+    <div class="card shadow">
+        <img v-if="product.gambar" :src="'http://localhost:8080/upload/' + product.gambar" class="card-img-top">
+        <div class="card-body d-flex flex-column">
             <h5 class="card-title">{{ product.nama }}</h5>
-            <p class="card-text">Harga : <strong>Rp. {{ product.harga }}</strong></p>
+            <p class="card-text flex-grow-1">Harga : <strong>Rp. {{ product.harga }}</strong></p>
             <router-link class="btn btn-success" :to="'/foods/' + product.id"><font-awesome-icon icon="shopping-cart" />
                 Pesan</router-link>
         </div>
@@ -16,5 +16,5 @@ export default {
 }
 </script>
 <style lang="">
-    
-</style>
+
+    </style>yle>

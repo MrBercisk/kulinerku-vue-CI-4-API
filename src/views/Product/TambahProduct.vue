@@ -41,7 +41,7 @@
             </div>
             <div class="row mb-3">
                 <div class="col-md-4 mt-4" v-for="product in products" :key="product.id">
-                    <CardProduct :product="product" />
+                    <CardEdit :product="product" />
                 </div>
             </div>
         </div>
@@ -52,14 +52,14 @@
 <script>
 import Footer from "@/components/Footer.vue"
 import Navbar from '@/components/Navbar.vue';
-import CardProduct from '@/components/CardProduct.vue';
+import CardEdit from '@/components/CardEdit.vue';
 import axios from 'axios';
 
 export default {
     name: 'TambahProduct',
     components: {
         Navbar,
-        CardProduct,
+        CardEdit,
         Footer
     },
     data() {
@@ -91,16 +91,17 @@ export default {
             formData.append('kode', this.product.kode);
             formData.append('nama', this.product.nama);
             formData.append('harga', this.product.harga);
-            formData.append('gambar', this.selectedFile); // Menggunakan selectedFile bukan product.selectedFile
-            formData.append('is_ready', this.product.is_ready); // Tanpa konversi ternary disini
+            formData.append('gambar', this.selectedFile); 
+            formData.append('is_ready', this.product.is_ready); 
 
             axios
                 .post("http://localhost:8080/api/products", formData, {
                     headers: {
-                        'Content-Type': 'multipart/form-data' // Tentukan tipe konten sebagai multipart/form-data
+                        'Content-Type': 'multipart/form-data' 
                     }
                 })
                 .then(() => {
+                    this.$router.push({ path: "/" })
                     this.$toast.success('Berhasil tambah product', {
                         type: 'success',
                         position: 'top-right',
@@ -112,7 +113,7 @@ export default {
                         kode: '',
                         nama: '',
                         harga: '',
-                        gambar: null, // Set gambar kembali ke null setelah berhasil ditambahkan
+                        gambar: null, 
                         is_ready: 1
                     };
                     // Setelah berhasil menambahkan produk, perbarui daftar produk

@@ -21,7 +21,9 @@ $routes->group('api', ['filter' => 'cors'], function ($routes) {
     $routes->put('products/(:segment)', 'Products::update/$1');
     $routes->delete('products/(:segment)', 'Products::delete/$1');
 
-    $routes->get('products', 'Products::getGambarUrl');
+    /* Best foods */
+    $routes->get('bestfoods', 'BestFoods::index');
+    $routes->post('bestfoods', 'BestFoods::create');
 
     /* Register & login */
 

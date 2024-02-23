@@ -22,7 +22,7 @@
 
                 <div class="row">
                     <div class="col-md-6">
-                        <img :src="'../assets/images/' + product.gambar" class="img-fluid shadow" alt="...">
+                        <img v-if="product.gambar" :src="'http://localhost:8080/upload/' + product.gambar" class="card-img-top">
                     </div>
                     <div class="col-md-6 mt-2">
                         <h2><strong>{{product.nama}}</strong></h2>
