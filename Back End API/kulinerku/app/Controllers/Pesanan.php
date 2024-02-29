@@ -4,6 +4,7 @@ namespace App\Controllers;
 
 use App\Models\ProductsModel;
 use App\Models\PesananModel;
+use App\Models\KeranjangModel;
 use CodeIgniter\RESTful\ResourceController;
 use CodeIgniter\API\ResponseTrait;
 
@@ -12,6 +13,7 @@ class Pesanan extends ResourceController
 
     protected $products;
     protected $pesanan;
+    protected $keranjang;
     protected $format = 'json';
     use ResponseTrait;
 
@@ -26,6 +28,7 @@ class Pesanan extends ResourceController
         }
         $this->products = new ProductsModel();
         $this->pesanan = new PesananModel();
+        $this->keranjang = new KeranjangModel();
     }
     public function index()
     {

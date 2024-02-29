@@ -111,6 +111,54 @@ nav .breadcrumb{
   font-weight: bold;
   color: #4EB883;
 }
+.order{
+  padding: 25px;
+  margin: 10px;
+  background-color: rgba(122, 209, 167, 0.7);
+  font-size: 17px;
+}
+.order button{
+  background-color: #4EB883;
+}
+.footer {
+  color: #fff;
+  padding: 30px 0;
+  text-align: center;
+}
+
+.footer h4 {
+  color: #4eb883;
+}
+
+.footer p {
+  color: black;
+}
+
+.social-icons {
+  margin-top: 20px;
+}
+
+.icon-link {
+  display: inline-block;
+  margin-right: 15px;
+  color: #ccc;
+  font-size: 24px;
+  transition: color 0.3s ease;
+}
+
+.icon-link:hover {
+  color: #4eb883;
+}
+
+.footer-bottom {
+  padding: 10px 0;
+  margin-top: 20px;
+}
+
+.copyright {
+  color: #ccc;
+  font-size: 14px;
+}
 
 a,
 .green {

@@ -26,6 +26,9 @@
     <div class="container mt-5">
       <Services />
     </div>
+    <div class="container mt-5">
+      <Order />
+    </div>
   </div>
   <Footer />
 </template>
@@ -34,6 +37,7 @@
 import Navbar from '@/components/Navbar.vue';
 import Hero from '@/components/Hero.vue';
 import About from '@/components/About.vue';
+import Order from '@/components/Order.vue';
 import CardProduct from '@/components/CardProduct.vue';
 import Services from '@/components/Services.vue';
 import Footer from "@/components/Footer.vue"
@@ -45,6 +49,7 @@ export default {
     Navbar,
     Hero,
     About,
+    Order,
     CardProduct,
     Services,
     Footer

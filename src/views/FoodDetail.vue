@@ -31,7 +31,7 @@
                         <!-- v on prevent agar tidak reload saat submit -->
                         <form class="mt-3" v-on:submit.prevent>
                             <div class="form-group">
-                                <input type="hidden" class="form-control"name="product_id" v-model="pesan.product_id">
+                                <input type="hidden" class="form-control" name="product_id" v-model="pesan.product_id">
                             </div>
                             <div class="form-group">
                                 <label for="jumlah_pesan">Jumlah Pesan</label>

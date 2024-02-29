@@ -8,7 +8,7 @@ import Login from '../views/Login.vue'
 import Daftar from '../views/Daftar.vue'
 import SyaratKetentuan from '../views/SyaratKetentuan.vue'
 import Kebijakan from '../views/Kebijakan.vue'
-import TambahProduct from '../views/Product/TambahProduct.vue'
+import ManageProduct from '../views/Product/ManageProduct.vue'
 import BestFoods from '../views/Product/BestFoods.vue'
 
 const router = createRouter({
@@ -60,9 +60,9 @@ const router = createRouter({
       component: SyaratKetentuan
     },
     {
-      path: '/tambah-product/',
-      name: 'TambahProduct',
-      component: TambahProduct
+      path: '/manageProduct/',
+      name: 'ManageProduct',
+      component: ManageProduct
     },
     {
       path: '/best-foods/',

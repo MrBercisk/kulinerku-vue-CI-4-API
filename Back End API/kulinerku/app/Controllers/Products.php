@@ -71,38 +71,50 @@ class Products extends ResourceController
         $product = $this->products->find($id);
 
         if (!$product) {
-            return $this->failNotFound('Makanan tidak ditemukan');
+            return $this->failNotFound('Produk tidak ditemukan');
         }
 
-        $gambar = $this->request->getFile('gambar');
-        $gambarName = $product['gambar']; // Simpan nama gambar saat ini sebagai default
+        // Periksa jika ada file gambar yang diunggah
+        if ($gambar = $this->request->getFile('gambar')) {
+            // Periksa apakah file gambar valid
+            if ($gambar->isValid()) {
+                // Pindahkan file gambar yang diunggah ke folder upload
+                $gambarName = $gambar->getRandomName();
+                $gambar->move('upload', $gambarName);
 
-        if ($gambar) {
-            // Jika ada file gambar yang diupload
-            $gambarName = $gambar->getRandomName();
-            $gambar->move('upload', $gambarName);
-
-            // Hapus gambar lama jika ada
-            if (is_file(WRITEPATH . 'upload/' . $product['gambar'])) {
-                unlink(WRITEPATH . 'upload/' . $product['gambar']);
+                // Hapus gambar lama jika ada
+                if (is_file(WRITEPATH . 'upload/' . $product['gambar'])) {
+                    unlink(WRITEPATH . 'upload/' . $product['gambar']);
+                }
+            } else {
+                return $this->respond(['error' => 'File gambar tidak valid'], 400);
             }
         }
 
-        // Update data produk
+        // Perbarui data produk
         $data = [
             'id' => $id,
             'kode' => $this->request->getVar('kode'),
             'nama' => $this->request->getVar('nama'),
             'harga' => $this->request->getVar('harga'),
-            'gambar' => $gambarName,
             'is_ready' => $this->request->getVar('is_ready')
         ];
 
-        // Lakukan pembaruan data produk
-        $this->products->save($data);
+        // Jika ada file gambar yang diunggah, tambahkan nama gambar ke dalam data
+        if (isset($gambarName)) {
+            $data['gambar'] = $gambarName;
+        }
 
-        return $this->respondUpdated('Data Berhasil Diupdate', 200);
+        // Lakukan pembaruan produk
+        $updated = $this->products->update($id, $data);
+
+        if ($updated) {
+            return $this->respondUpdated('Produk berhasil diperbarui', $updated);
+        } else {
+            return $this->fail('Gagal memperbarui produk', 500);
+        }
     }
+
 
 
     public function delete($id = null)

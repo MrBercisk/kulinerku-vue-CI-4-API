@@ -52,7 +52,7 @@
                                         <td align="right">{{ keranjangs.harga * keranjangs.jumlah_pesan }}</td>
 
                                         <td align="center">
-                                            <button type="button" class="btn btn-danger"
+                                            <button class="btn btn-danger"
                                                 @click="hapusKeranjang(keranjangs.id)"><font-awesome-icon
                                                     icon="trash" /></button>
                                         </td>
@@ -131,7 +131,12 @@ export default {
                 // Menggunakan Promise.all untuk menunggu semua permintaan selesai sebelum melanjutkan
                 Promise.all(requests)
                     .then(() => {
+                        // Hapus keranjang setelah checkout berhasil
+                        this.keranjang.forEach(item => {
+                            this.hapusKeranjang(item.id);
+                        });
 
+                        // Pindahkan pengguna ke halaman pesanan sukses
                         this.$router.push({ path: "/pesanan-sukses" });
 
                         this.$toast.success('Sukses Dipesan', {
@@ -151,7 +156,8 @@ export default {
                 });
             }
         },
-       
+
+
         getKeranjang() {
             axios
                 .get("http://localhost:8080/api/keranjang")
@@ -163,6 +169,16 @@ export default {
         },
         updateTotalHarga() {
             this.pesanan.totalHarga = this.totalHarga;
+        },
+        hapusKeranjang(id) {
+            axios
+                .delete(`http://localhost:8080/api/keranjang/${id}`)
+                .then((response) => {
+                    this.setKeranjang(response.data);
+                    this.$router.push({ path: "/keranjang" })
+                    this.getKeranjang();
+                })
+                .catch((error) => console.log(error));
         }
     },
     mounted() {
@@ -174,7 +190,8 @@ export default {
                 return total + keranjangs.harga * keranjangs.jumlah_pesan;
             }, 0);
         }
-    }
+    },
+
 }
 
 </script>

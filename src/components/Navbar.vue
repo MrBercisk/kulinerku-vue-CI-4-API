@@ -20,7 +20,7 @@
                         <router-link class="nav-link" to="/best-foods">Best Foods</router-link>
                     </li>
                 </ul>
-                <ul class="navbar-nav ml-5">
+                <ul class="navbar-nav">
                     <li class="nav-item">
                         <router-link class="nav-link" to="/login"> Login
                             <font-awesome-icon class="text-muted" icon="user" />
@@ -29,15 +29,15 @@
                 </ul>
                 <ul class="navbar-nav">
                     <li class="nav-item">
-                        <router-link class="nav-link" to="/tambah-product"> Tambah Product
+                        <router-link class="nav-link" to="/manageProduct"> Manage Product
                             <font-awesome-icon class="text-muted" icon="plus" />
                         </router-link>
                     </li>
                 </ul>
                 <ul class="navbar-nav">
                     <li class="nav-item active">
-                        <router-link class="nav-link" to="/keranjang">Keranjang
-                            <font-awesome-icon class="text-muted" icon="shopping-bag" />
+                        <router-link class="nav-link" to="/keranjang">Order
+                            <font-awesome-icon class="text-muted" icon="shopping-cart" />
                             <span class="badge badge-success ml-2">{{ updateKeranjang ? updateKeranjang.length :
                                 jumlah_pesanan.length }}</span>
                         </router-link>

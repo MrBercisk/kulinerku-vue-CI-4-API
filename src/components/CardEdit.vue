@@ -5,15 +5,17 @@
             <h5 class="card-title">{{ product.nama }}</h5>
             <p class="card-text flex-grow-1">Harga : <strong>Rp. {{ product.harga }}</strong></p>
             <div class="aksi">
-                <button class="btn btn-primary mr-2" data-toggle="modal" data-target="#editModal"><font-awesome-icon
-                        icon="pencil" />
-                    Edit</button>
-                <button class="btn btn-danger"><font-awesome-icon icon="trash" />
-                    Hapus</button>
+                <button class="btn btn-primary mr-2" @click="showEditModal(product.id)">
+                    <font-awesome-icon icon="pencil" />
+                    Edit
+                </button>
+                <button class="btn btn-danger" @click="hapusProduct">
+                    <font-awesome-icon icon="trash" /> Hapus
+                </button>
             </div>
         </div>
         <!-- Modal Edit -->
-        <div class="modal" id="editModal" tabindex="-1" role="dialog">
+        <div class="modal" :id="'editModal-' + product.id" tabindex="-1" role="dialog">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -23,33 +25,29 @@
                         </button>
                     </div>
                     <div class="modal-body">
-                        <form @submit.prevent="editProduct">
-                            <input type="hidden" v-model="product.id" class="form-control float-left">
-
+                        <form @submit.prevent="updateProduct(product.id)">
+                            <input type="text" v-model="editedProduct.id" name="id" class="form-control">
                             <div class="form-group">
                                 <label for="kode">Kode Product</label>
-                                <input type="text" v-model="product.kode" name="kode" class="form-control">
+                                <input type="text" v-model="editedProduct.kode" name="kode" class="form-control">
                             </div>
                             <div class="form-group">
                                 <label for="nama">Nama Product</label>
-                                <input type="text" v-model="product.nama" name="nama" class="form-control">
+                                <input type="text" v-model="editedProduct.nama" name="nama" class="form-control">
                             </div>
                             <div class="form-group">
                                 <label for="harga">Harga</label>
-                                <input type="number" v-model="product.harga" name="harga" class="form-control">
+                                <input type="number" v-model="editedProduct.harga" name="harga" class="form-control">
                             </div>
                             <div class="form-group">
                                 <label for="gambar">Gambar Product</label>
                                 <input type="file" @change="onFileChange" accept="image/jpeg" name="gambar"
                                     class="form-control">
                             </div>
-
                             <div class="form-group">
-                                <input type="hidden" v-model="product.is_ready" class="form-control float-left">
+                                <input type="hidden" v-model="editedProduct.is_ready" class="form-control float-left">
                             </div>
-
                             <button type="submit" class="btn btn-primary float-right">Submit</button>
-
                         </form>
                     </div>
                 </div>
@@ -65,62 +63,111 @@ export default {
     props: ['product'],
     data() {
         return {
-            selectedFile: null
+            selectedFile: null,
+            editedProduct: {
+                id: '',
+                kode: '',
+                nama: '',
+                harga: '',
+                gambar: null, // Tambahkan properti gambar di sini
+                is_ready: 1
+            },
         };
     },
     methods: {
-        setProducts(data) {
-            this.products = data;
-        },
         onFileChange(event) {
             this.selectedFile = event.target.files[0];
         },
-        editProduct() {
-            this.product.is_ready = this.product.is_ready ? 1 : 0;
+        showEditModal(id) {
+            axios
+                .get(`http://localhost:8080/api/products/${id}`)
+                .then((response) => {
+                    this.editedProduct = response.data;
+                    $(`#editModal-${id}`).modal('show');
+                })
+                .catch((error) => {
+                    console.log(error);
+                });
+        },
+        updateProduct(id) {
+            this.product.id = id;
+
+            this.editedProduct.is_ready = this.editedProduct.is_ready ? 1 : 0;
 
             // Buat objek FormData untuk mengirimkan data form, termasuk file gambar
             let formData = new FormData();
-            formData.append('id', this.product.id);
-            formData.append('kode', this.product.kode);
-            formData.append('nama', this.product.nama);
-            formData.append('harga', this.product.harga);
+            formData.append('id', this.editedProduct.id);
+            formData.append('kode', this.editedProduct.kode);
+            formData.append('nama', this.editedProduct.nama);
+            formData.append('harga', this.editedProduct.harga);
             formData.append('gambar', this.selectedFile);
-            formData.append('is_ready', this.product.is_ready);
-
-            axios.put(`http://localhost:8080/api/products/${this.product.id}`, formData, {
-                headers: {
-                    'Content-Type': 'multipart/form-data'
-                }
-            })
-
-                .then(() => {
-                    this.$router.push({ path: "/" })
+            formData.append('is_ready', this.editedProduct.is_ready);
+            for (var pair of formData.entries()) {
+                console.log(pair[0] + ': ' + pair[1]);
+            }
+            axios
+                .put(`http://localhost:8080/api/products/${id}`, formData, {
+                    headers: {
+                        'Content-Type': 'multipart/form-data'
+                    }
+                })
+                .then((response) => {
+                    console.log(response);
                     this.$toast.success('Berhasil update product', {
                         type: 'success',
                         position: 'top-right',
                         duration: 3000,
                         dismissible: true,
                     });
-                    // Setelah berhasil mengupdate produk, perbarui daftar produk
-                    this.loadProducts();
+                    // Muat ulang produk setelah pembaruan berhasil
+                    this.getProducts();
                 })
-                .catch(() => this.$toast.error('Gagal update data', {
-                    type: 'error',
-                    position: 'top-right',
-                    duration: 3000,
-                    dismissible: true,
-                }));
+                .catch(() => {
+                    this.$toast.error('Gagal update data', {
+                        type: 'error',
+                        position: 'top-right',
+                        duration: 3000,
+                        dismissible: true,
+                    });
+                });
         },
-        loadProducts() {
+        hapusProduct() {
+            axios
+                .delete(`http://localhost:8080/api/products/${this.product.id}`)
+                .then(() => {
+                    this.$router.push({ path: "/" });
+                    this.$toast.success('Berhasil hapus product', {
+                        type: 'success',
+                        position: 'top-right',
+                        duration: 3000,
+                        dismissible: true,
+                    });
+                    // Muat ulang produk setelah penghapusan berhasil
+                    this.getProducts();
+                })
+                .catch(() => {
+                    this.$toast.error('Gagal hapus data', {
+                        type: 'error',
+                        position: 'top-right',
+                        duration: 3000,
+                        dismissible: true,
+                    });
+                });
+        },
+        getProducts() {
             axios
                 .get("http://localhost:8080/api/products")
-                .then((response) => this.setProducts(response.data))
-                .catch((error) => console.log(error));
+                .then((response) => {
+                    this.products = response.data;
+                })
+                .catch((error) => {
+                    console.log(error);
+                });
         },
-
     },
     mounted() {
-        this.loadProducts()
+        // Panggil metode untuk memuat produk saat komponen dimuat
+        this.getProducts();
     },
 }
 </script>

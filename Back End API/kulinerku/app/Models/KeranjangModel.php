@@ -25,6 +25,7 @@ class KeranjangModel extends Model
         ->select('keranjang.*, products.nama, products.harga, products.gambar')
         ->findAll();
     }
+	
     
 
 }
